@@ -23,17 +23,19 @@ struct Item {
 
 struct List {
     name: String,
+    creation_date: DateTime<UTC>,
     items: Vec<Item>
 } impl List {
-    fn new(name: &str, items: Vec<Item>) -> List {
+    fn new(name: &str, creation_date: DateTime<UTC>, items: Vec<Item>) -> List {
         List {
             name: name.to_string(),
+            creation_date: creation_date,
             items: items
         }
     }
     fn create(&self) {
         let mut file = create_file(&self.name, "txt");
-        let mut formatted_string = format!("{}\n\n", self.name);
+        let mut formatted_string = format!("{}\n{}\n\n", self.name, self.creation_date);
 
         for item in &self.items {
             formatted_string.push_str(&format!("*   {}\n", item.content));
@@ -82,12 +84,12 @@ fn override_file(file: &mut File, content: &str) {
 // MAIN
 
 fn main() {
-    let list = List::new("example", vec![
+    let list = List::new("example", UTC::now(), vec![
         Item::new("Some information"),
         Item::new("Test"),
         Item::new("Holly")
     ]);
-    list.save();
+    list.create();
     let utc: DateTime<UTC> = UTC::now();
     // let xyz = List::from_file("example", "txt");
 }
