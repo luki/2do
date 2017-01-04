@@ -1,6 +1,15 @@
+extern crate chrono;
+
 use std::io::prelude::*; // (Write_all)
 use std::fs::File;
 use std::error::Error; // (why.description...)
+use chrono::*; // Date stuff
+
+// TODO:
+/*
+    - Check for item
+    - Implement date for creation & checked, etc
+*/
 
 // MODELLING
 
@@ -22,7 +31,7 @@ struct List {
             items: items
         }
     }
-    fn save(&self) {
+    fn create(&self) {
         let mut file = create_file(&self.name, "txt");
         let mut formatted_string = format!("{}\n\n", self.name);
 
@@ -32,10 +41,6 @@ struct List {
 
         write_to_file(&mut file, &formatted_string);
     }
-    // fn from_file(file_name: &str, file_extension: &str) -> List {
-    //     let mut file = open_file(file_name, file_extension);
-    //
-    // }
 }
 
 // BASIC METHODS
@@ -79,8 +84,10 @@ fn override_file(file: &mut File, content: &str) {
 fn main() {
     let list = List::new("example", vec![
         Item::new("Some information"),
-        Item::new("Test")
+        Item::new("Test"),
+        Item::new("Holly")
     ]);
     list.save();
+    let utc: DateTime<UTC> = UTC::now();
     // let xyz = List::from_file("example", "txt");
 }
