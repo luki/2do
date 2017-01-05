@@ -1,17 +1,16 @@
-#Todo
-Todo is an i/o list manager 
+# 📋 2odo
+Todo is an i/o list manager
 
-##Functionality
-- It allows you to create a list in code
-- It allows you to save the list as a formatted file
-- It allows you to create a list object from a formatted file
+## 🛠 Functionality
+- Creating a list in code
+- Saving the list as a formatted file
+- Reading a formatted file into a list
 
-##Additional Inclusion
+## ➕ Additional Inclusion
 - Basic io methods as easy-to-call functions (create, open, read, write)
 
-##Dependencies
+## 🖇 Dependencies
 - [Chrono](https://github.com/lifthrasiir/rust-chrono)
 
-##Masthead
-Rust-written by [Luke Muller](https://twitter.com/betaluki) in Portland, Oregon. 
-
+## 👨‍🎨 Masthead
+Rust-written by [Luke Muller](https://twitter.com/betaluki) in Portland, Oregon.
