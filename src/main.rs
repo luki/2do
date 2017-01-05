@@ -4,7 +4,6 @@ use std::io::prelude::*; // (Write_all)
 use std::fs::File;
 use std::error::Error; // (why.description...)
 use chrono::*; // Date stuff
-use std::io;
 
 // TODO
 //      - Recognize \t for removal
