@@ -1,4 +1,4 @@
-# 📋 2odo
+# 📋 2do
 Todo is an i/o list manager
 
 ## 🛠 Functionality
