@@ -33,7 +33,7 @@ struct List {
             items: items
         }
     }
-    fn create(&self) {
+    fn save_as_file(&self) {
         let mut file = create_file(&self.name, "txt");
         let mut formatted_string = format!("{}\n{}\n\n", self.name, self.creation_date);
 
@@ -42,6 +42,16 @@ struct List {
         }
 
         write_to_file(&mut file, &formatted_string);
+    }
+    fn from_file(file: &mut File) -> List {
+        let mut content = read_from_file(file);
+        let mut content_vector: Vec<&str> = content.split("\n").collect();
+
+        let date = match UTC.datetime_from_str("2014-11-28 12:00:09", "%Y-%m-%d %H:%M:%S") {
+            Ok(date) => date,
+            Err(why) => panic!("{}", why)
+        };
+        List::new(content_vector[0], date, vec![])
     }
 }
 
@@ -89,7 +99,15 @@ fn main() {
         Item::new("Test"),
         Item::new("Holly")
     ]);
-    list.create();
-    let utc: DateTime<UTC> = UTC::now();
-    // let xyz = List::from_file("example", "txt");
+    list.save_as_file();
+
+    let mut s = read_from_file(&mut open_file("example", "txt"));
+    let mut s2: Vec<&str> = s.split("\n").collect();
+    println!("{}", s2.len());
+    for i in 0..s2.len() {
+        println!("{}: {}", i, s2[i]);
+    }
+
+    let mut n_list = List::from_file(&mut open_file("example", "txt"));
+    println!("Title: {}", n_list.name);
 }
