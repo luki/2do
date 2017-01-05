@@ -4,12 +4,10 @@ use std::io::prelude::*; // (Write_all)
 use std::fs::File;
 use std::error::Error; // (why.description...)
 use chrono::*; // Date stuff
+use std::io;
 
-// TODO:
-/*
-    - Check for item
-    - Implement date for creation & checked, etc
-*/
+// TODO
+//      - Recognize \t for removal
 
 // MODELLING
 
@@ -38,20 +36,38 @@ struct List {
         let mut formatted_string = format!("{}\n{}\n\n", self.name, self.creation_date);
 
         for item in &self.items {
-            formatted_string.push_str(&format!("*   {}\n", item.content));
+            formatted_string.push_str(&format!("*\t{}\n", item.content));
         }
 
         write_to_file(&mut file, &formatted_string);
     }
     fn from_file(file: &mut File) -> List {
         let mut content = read_from_file(file);
-        let mut content_vector: Vec<&str> = content.split("\n").collect();
+        let mut content_vec: Vec<&str> = content.split("\n").collect();
 
+        // PROBLEM here, with reading date (content_vector[1])
         let date = match UTC.datetime_from_str("2014-11-28 12:00:09", "%Y-%m-%d %H:%M:%S") {
             Ok(date) => date,
             Err(why) => panic!("{}", why)
         };
-        List::new(content_vector[0], date, vec![])
+
+        let mut item_vec: Vec<Item> = Vec::new();
+
+        // Removing stars & tabs
+        for i in 3..content_vec.len() - 1 {
+            let current_content_vec: Vec<&str> = content_vec[i].split("").collect();
+            let mut temp_content_vec: Vec<&str> = Vec::new();
+
+            for single in current_content_vec {
+                if single != "*" && single != " " {
+                    temp_content_vec.push(single)
+                }
+            }
+
+            item_vec.push(Item::new(&temp_content_vec.join("")))
+        }
+
+        List::new(content_vec[0], date, item_vec)
     }
 }
 
@@ -94,20 +110,11 @@ fn override_file(file: &mut File, content: &str) {
 // MAIN
 
 fn main() {
-    let list = List::new("example", UTC::now(), vec![
-        Item::new("Some information"),
-        Item::new("Test"),
-        Item::new("Holly")
+    let list = List::new("Hello", UTC::now(), vec![
+        Item::new("Hello"),
+        Item::new("Test")
     ]);
     list.save_as_file();
 
-    let mut s = read_from_file(&mut open_file("example", "txt"));
-    let mut s2: Vec<&str> = s.split("\n").collect();
-    println!("{}", s2.len());
-    for i in 0..s2.len() {
-        println!("{}: {}", i, s2[i]);
-    }
-
-    let mut n_list = List::from_file(&mut open_file("example", "txt"));
-    println!("Title: {}", n_list.name);
+    let file_list = List::from_file(&mut open_file("Hello", "txt"));
 }

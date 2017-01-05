@@ -1,6 +1,0 @@
-example
-2017-01-05 02:05:24.409234 UTC
-
-*   Some information
-*   Test
-*   Holly
