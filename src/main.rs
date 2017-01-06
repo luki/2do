@@ -5,10 +5,9 @@ use std::fs::File;
 use std::error::Error; // (why.description...)
 use chrono::*; // Date stuff
 
-// TODO
-//      - Recognize \t for removal
-
-// MODELLING
+/* -------------------------------
+            MODELLING
+--------------------------------*/
 
 struct Item {
     content: String
@@ -32,7 +31,7 @@ struct List {
     }
     fn save_as_file(&self) {
         let mut file = create_file(&self.name, "txt");
-        let mut formatted_string = format!("{}\n{}\n\n", self.name, self.creation_date);
+        let mut formatted_string = format!("{}\n\n{}\n\n", self.name, self.creation_date);
 
         for item in &self.items {
             formatted_string.push_str(&format!("*\t{}\n", item.content));
@@ -42,7 +41,7 @@ struct List {
     }
     fn from_file(file: &mut File) -> List {
         let mut content = read_from_file(file);
-        let mut content_vec: Vec<&str> = content.split("\n").collect();
+        let mut content_vec: Vec<&str> = content.split("\n\n").collect();
 
         // As UTC formatting is wrong, removing all after . (milliseconds)
 
@@ -60,28 +59,23 @@ struct List {
             Ok(date) => date,
             Err(why) => panic!("{}", why)
         };
-
+        println!("{:?}", content_vec[content_vec.len()-1]);
+        let items_text_vec: Vec<&str> = content_vec[content_vec.len()-1].split("*").collect();
         let mut item_vec: Vec<Item> = Vec::new();
 
-        // Removing stars & tabs
-        for i in 3..content_vec.len() - 1 {
-            let current_content_vec: Vec<&str> = content_vec[i].split("").collect();
-            let mut temp_content_vec: Vec<&str> = Vec::new();
-
-            for single in current_content_vec {
-                if single != "*" && single != " " {
-                    temp_content_vec.push(single)
-                }
-            }
-
-            item_vec.push(Item::new(&temp_content_vec.join("")))
+        for item in &items_text_vec {
+            item_vec.push(
+                Item::new(&item)
+            )
         }
 
         List::new(content_vec[0], date, item_vec)
     }
 }
 
-// BASIC METHODS
+/* -------------------------------
+        BASIC I/O METHODS
+--------------------------------*/
 
 fn create_file(file_name: &str, file_extension: &str) -> File {
     let mut file = match File::create(format!("{}.{}", file_name, file_extension)) {
@@ -130,6 +124,6 @@ fn main() {
 
     println!("Title: {}\nDate: {}\n", list.name, list.creation_date);
     for item in &list.items {
-        println!("{}", item.content)
+        println!("{:?}", item.content)
     }
 }
