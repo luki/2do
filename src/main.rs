@@ -44,8 +44,19 @@ struct List {
         let mut content = read_from_file(file);
         let mut content_vec: Vec<&str> = content.split("\n").collect();
 
-        // PROBLEM here, with reading date (content_vector[1])
-        let date = match UTC.datetime_from_str("2014-11-28 12:00:09", "%Y-%m-%d %H:%M:%S") {
+        // As UTC formatting is wrong, removing all after . (milliseconds)
+
+        let date_vec: Vec<&str> = content_vec[1].split("").collect();
+        let mut temp_date_vec: Vec<&str> = Vec::new();
+
+        for i in 0..date_vec.len() {
+            if date_vec[i] == "." {
+                break
+            }
+            temp_date_vec.push(date_vec[i]);
+        }
+
+        let date = match UTC.datetime_from_str(&format!("{}", temp_date_vec.join("")), "%Y-%m-%d %H:%M:%S") {
             Ok(date) => date,
             Err(why) => panic!("{}", why)
         };
@@ -107,13 +118,18 @@ fn override_file(file: &mut File, content: &str) {
 }
 
 // MAIN
-
 fn main() {
-    let list = List::new("Hello", UTC::now(), vec![
-        Item::new("Hello"),
-        Item::new("Test")
-    ]);
-    list.save_as_file();
+    // let list = List::new("school", UTC::now(), vec![
+    //     Item::new("Do math homework"),
+    //     Item::new("Study for German test"),
+    //     Item::new("Revise history")
+    // ]);
+    //
+    // list.save_as_file();
+    let list = List::from_file(&mut open_file("school", "txt"));
 
-    let file_list = List::from_file(&mut open_file("Hello", "txt"));
+    println!("Title: {}\nDate: {}\n", list.name, list.creation_date);
+    for item in &list.items {
+        println!("{}", item.content)
+    }
 }
