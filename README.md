@@ -1,5 +1,5 @@
 # 📋 2do
-Todo is an i/o list manager
+2do is a list manager parser
 
 ## 🛠 Functionality
 - Creating a list in code
@@ -8,6 +8,14 @@ Todo is an i/o list manager
 
 ## ➕ Additional Inclusion
 - Basic io methods as easy-to-call functions (create, open, read, write)
+
+## ⚙️ Execution
+### 💁🏼 Explanation
+2do is somewhat like a parser, in a sense where a list object with all
+its items will be nicely formatted and followingly turnt into a text-file, as well as vice versa.
+### 📝 Example
+*Will follow Soon*
+
 
 ## 🖇 Dependencies
 - [Chrono](https://github.com/lifthrasiir/rust-chrono)
